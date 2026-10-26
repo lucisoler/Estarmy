@@ -1,0 +1,198 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Compra confirmada — Estarmy</title>
+<link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'%3E%3Crect width='100' height='100' fill='%23000'/%3E%3Cpath d='M50 8 60 40 92 50 60 60 50 92 40 60 8 50 40 40Z' fill='%23D4AF37'/%3E%3C/svg%3E">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Marcellus&family=Work+Sans:wght@400;500&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --indent: 2cm;
+    --black: #000; --coal: #0B0B0B; --panel: #111;
+    --gold: #D4AF37; --gold-soft: #B8964A; --gold-dim: #6E5A26;
+    --text: #EFE6CC; --text-dim: #A89F86; --line: #2A2415;
+    --display: 'Friz Quadrata', 'Friz Quadrata TT', 'Marcellus', 'Palatino Linotype', serif;
+  }
+  * { box-sizing: border-box; }
+  body { margin: 0; background: var(--black); color: var(--text); font-family: 'Work Sans', sans-serif; line-height: 1.55; }
+  a { color: inherit; }
+  :focus-visible { outline: 2px solid var(--gold); outline-offset: 3px; }
+  .wrap { max-width: 1440px; margin: 0 auto; padding-inline: var(--indent); }
+  main, header, footer { position: relative; z-index: 1; }
+
+  .stars { position: fixed; inset: 0; z-index: 0; pointer-events: none; overflow: hidden; }
+  .stars span { position: absolute; background: var(--gold); opacity: .15; animation: twinkle 4s ease-in-out infinite;
+    clip-path: polygon(50% 0, 59% 41%, 100% 50%, 59% 59%, 50% 100%, 41% 59%, 0 50%, 41% 41%); }
+  @keyframes twinkle { 0%,100% { opacity: .12; } 50% { opacity: .85; } }
+  @media (prefers-reduced-motion: reduce) { .stars span { animation: none; opacity: .4; } }
+
+  .logo { font-family: var(--display); font-size: 30px; letter-spacing: 1px; text-decoration: none; color: var(--gold);
+    background: linear-gradient(180deg, #F3D67A 0%, #D4AF37 50%, #9C7A22 100%);
+    -webkit-background-clip: text; background-clip: text; -webkit-text-fill-color: transparent; }
+  header.site { border-bottom: 1px solid var(--line); }
+  .nav { display: flex; align-items: center; justify-content: space-between; padding-block: 22px; gap: 24px; }
+  .nav-cta { font-size: 13.5px; border: 1px solid var(--gold); color: var(--gold); padding: 9px 20px; text-decoration: none; }
+  .nav-cta:hover { background: var(--gold); color: var(--black); }
+
+  .confirmacion { padding-block: 72px 80px; }
+  .estrella { width: 56px; height: 56px; background: var(--gold); margin-bottom: 22px;
+    clip-path: polygon(50% 0, 59% 41%, 100% 50%, 59% 59%, 50% 100%, 41% 59%, 0 50%, 41% 41%); }
+  .kicker { color: var(--gold-soft); font-size: 14.5px; margin: 0 0 14px; }
+  h1 { font-family: var(--display); font-weight: 400; font-size: clamp(32px, 4vw, 48px); line-height: 1.12; margin: 0 0 18px; max-width: 20ch; }
+  .lede { color: var(--text-dim); font-size: 16.5px; margin: 0 0 6px; max-width: 54ch; }
+  .numero { font-family: var(--display); font-size: clamp(30px, 4vw, 44px); color: var(--gold); margin: 0 0 44px; letter-spacing: 1px; }
+
+  .cols { display: grid; grid-template-columns: 1.1fr .9fr; gap: 1px; background: var(--line); border: 1px solid var(--line); margin-bottom: 28px; }
+  .caja { background: var(--coal); padding: 28px; }
+  .caja h2 { font-family: var(--display); font-weight: 400; font-size: 20px; color: var(--gold); margin: 0 0 14px; }
+  .caja h2:not(:first-child) { margin-top: 28px; }
+  .caja p { margin: 0; font-size: 14.5px; color: var(--text-dim); }
+  .resumen { list-style: none; margin: 0; padding: 0; }
+  .resumen li { display: flex; justify-content: space-between; gap: 16px; padding: 11px 0; border-bottom: 1px solid var(--line); font-size: 14.5px; }
+  .resumen .total { border-bottom: 0; font-family: var(--display); font-size: 20px; color: var(--gold); padding-top: 16px; }
+  .pasos { margin: 0; padding-left: 20px; display: flex; flex-direction: column; gap: 10px; font-size: 14.5px; color: var(--text-dim); }
+  .pasos li::marker { color: var(--gold); }
+
+  .aviso { border: 1px solid var(--gold-dim); padding: 14px 18px; font-size: 13.5px; color: var(--text-dim); max-width: 78ch; margin: 0 0 32px; }
+  .aviso a { color: var(--gold); }
+  .actions { display: flex; gap: 14px; flex-wrap: wrap; }
+  .btn { display: inline-block; padding: 13px 26px; font: inherit; font-size: 14.5px; text-decoration: none; border: 1px solid transparent; cursor: pointer; }
+  .btn-primary { background: var(--gold); color: var(--black); font-weight: 500; }
+  .btn-primary:hover { background: #E6C24F; }
+  .btn-ghost { background: transparent; border-color: var(--gold-dim); color: var(--text); }
+  .btn-ghost:hover { border-color: var(--gold); }
+
+  footer.site { border-top: 1px solid var(--line); padding-block: 28px; font-size: 12.5px; color: var(--text-dim); background: rgba(0,0,0,.7); }
+
+  @media (max-width: 860px) { .cols { grid-template-columns: 1fr; } .confirmacion { padding-block: 48px; } }
+  @media (max-width: 520px) { :root { --indent: 1cm; } }
+  @media print {
+    body { background: #fff; color: #000; }
+    .stars, header.site, .actions, footer.site { display: none; }
+    .caja, .aviso { background: #fff; border-color: #999; }
+    .caja h2, .numero, .resumen .total, .kicker { color: #000; -webkit-text-fill-color: #000; }
+    .lede, .caja p, .pasos, .aviso { color: #222; }
+    .estrella { background: #000; }
+  }
+</style>
+</head>
+<body>
+<div class="stars" id="stars" aria-hidden="true"></div>
+
+<header class="site">
+  <div class="wrap nav">
+    <a class="logo" href="index.html">Estarmy</a>
+    <a class="nav-cta" href="index.html#catalogo">Seguir comprando</a>
+  </div>
+</header>
+
+<main class="wrap confirmacion">
+  <section id="ok" hidden>
+    <div class="estrella" aria-hidden="true"></div>
+    <p class="kicker">Compra confirmada</p>
+    <h1 id="saludo"></h1>
+    <p class="lede">Registramos tu pedido el <span id="fecha"></span>. Tu número de pedido es:</p>
+    <p class="numero" id="numero"></p>
+
+    <div class="cols">
+      <div class="caja">
+        <h2>Tu pedido</h2>
+        <ul class="resumen" id="lista"></ul>
+        <p id="pago" hidden></p>
+      </div>
+      <div class="caja">
+        <h2>Entrega</h2>
+        <p id="entrega"></p>
+        <h2>Qué sigue</h2>
+        <ol class="pasos">
+          <li>Te escribimos por WhatsApp para coordinar la entrega.</li>
+          <li>Preparamos tu pedido con cuidado.</li>
+          <li id="paso-final"></li>
+        </ol>
+      </div>
+    </div>
+
+    <p class="aviso">
+      <strong>Tu derecho de arrepentimiento:</strong> tenés 10 días corridos desde que recibís tu pedido para revocar la compra, sin dar explicaciones (Ley 24.240, art. 34). Guardá tu número de pedido y usá el
+      <a href="index.html#arrepentimiento">botón de arrepentimiento</a> de la tienda.
+      Estarmy es una simulación académica: no se procesó ningún pago ni se enviaron tus datos a ningún servidor.
+    </p>
+
+    <div class="actions">
+      <a class="btn btn-primary" href="index.html#catalogo">Volver a la tienda</a>
+      <button class="btn btn-ghost" id="imprimir">Imprimir comprobante</button>
+    </div>
+  </section>
+
+  <section id="no-ok" hidden>
+    <div class="estrella" aria-hidden="true"></div>
+    <h1>No encontramos ese pedido</h1>
+    <p class="lede">El enlace puede estar incompleto, o el pedido se hizo desde otro navegador o dispositivo. Los pedidos de esta simulación se guardan solo en tu propio navegador.</p>
+    <a class="btn btn-primary" href="index.html#catalogo">Ir a la tienda</a>
+  </section>
+</main>
+
+<footer class="site">
+  <div class="wrap">© 2026 Estarmy — proyecto de simulación académica</div>
+</footer>
+
+<script>
+  const pesos = new Intl.NumberFormat('es-AR', { style: 'currency', currency: 'ARS', maximumFractionDigits: 0 });
+  const esc = t => String(t).replace(/[&<>"']/g, c => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' }[c]));
+
+  function leerPedidos() {
+    try { return JSON.parse(localStorage.getItem('estarmy_pedidos')) || []; }
+    catch { return []; }
+  }
+
+  const numero = (new URLSearchParams(location.search).get('n') || '').toUpperCase();
+  const pedido = leerPedidos().find(p => p.numero === numero);
+
+  if (!pedido) {
+    document.getElementById('no-ok').hidden = false;
+  } else {
+    document.getElementById('ok').hidden = false;
+    const primerNombre = (pedido.nombre || '').trim().split(/\s+/)[0];
+    document.getElementById('saludo').textContent = primerNombre
+      ? '¡Gracias por tu compra, ' + primerNombre + '!'
+      : '¡Gracias por tu compra!';
+    document.getElementById('numero').textContent = pedido.numero;
+    document.getElementById('fecha').textContent = new Date(pedido.fecha).toLocaleDateString('es-AR');
+
+    document.getElementById('lista').innerHTML = pedido.items
+      .map(i => `<li><span>${esc(i.cantidad)} × ${esc(i.nombre)}</span><span>${pesos.format(i.precio * i.cantidad)}</span></li>`)
+      .join('') + `<li class="total"><span>Total</span><span>${pesos.format(pedido.total)}</span></li>`;
+
+    if (pedido.pago) {
+      const el = document.getElementById('pago');
+      el.textContent = 'Pagado con tarjeta terminada en ' + pedido.pago.ultimos4 + (pedido.pago.cuotas > 1 ? ', en ' + pedido.pago.cuotas + ' cuotas.' : ', en 1 pago.');
+      el.hidden = false;
+    }
+
+    const retiro = pedido.entrega === 'retiro';
+    document.getElementById('entrega').textContent = retiro
+      ? 'Retiro en Juan José Castelli. Te avisamos cuando tu pedido esté listo.'
+      : 'Envío a ' + (pedido.localidad || 'tu localidad') + ', por encomienda o combi.';
+    document.getElementById('paso-final').textContent = retiro
+      ? 'Lo retirás en Castelli, en el punto que coordinemos.'
+      : 'Lo recibís en tu localidad por encomienda o combi.';
+  }
+
+  document.getElementById('imprimir').addEventListener('click', () => window.print());
+
+  const layer = document.getElementById('stars');
+  for (let i = 0; i < 40; i++) {
+    const s = document.createElement('span');
+    const size = 6 + Math.random() * 14;
+    s.style.left = Math.random() * 100 + '%';
+    s.style.top = Math.random() * 100 + '%';
+    s.style.width = s.style.height = size + 'px';
+    s.style.animationDelay = (Math.random() * 6) + 's';
+    s.style.animationDuration = (3 + Math.random() * 4) + 's';
+    layer.appendChild(s);
+  }
+</script>
+</body>
+</html>

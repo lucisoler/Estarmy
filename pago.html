@@ -1,0 +1,297 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Pago con tarjeta — Estarmy</title>
+<link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'%3E%3Crect width='100' height='100' fill='%23000'/%3E%3Cpath d='M50 8 60 40 92 50 60 60 50 92 40 60 8 50 40 40Z' fill='%23D4AF37'/%3E%3C/svg%3E">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Marcellus&family=Work+Sans:wght@400;500&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --indent: 2cm;
+    --black: #000; --coal: #0B0B0B;
+    --gold: #D4AF37; --gold-soft: #B8964A; --gold-dim: #6E5A26;
+    --text: #EFE6CC; --text-dim: #A89F86; --line: #2A2415;
+    --display: 'Friz Quadrata', 'Friz Quadrata TT', 'Marcellus', 'Palatino Linotype', serif;
+  }
+  * { box-sizing: border-box; }
+  body { margin: 0; background: var(--black); color: var(--text); font-family: 'Work Sans', sans-serif; line-height: 1.55; }
+  a { color: inherit; }
+  :focus-visible { outline: 2px solid var(--gold); outline-offset: 3px; }
+  .wrap { max-width: 1440px; margin: 0 auto; padding-inline: var(--indent); }
+  main, header, footer { position: relative; z-index: 1; }
+
+  .stars { position: fixed; inset: 0; z-index: 0; pointer-events: none; overflow: hidden; }
+  .stars span { position: absolute; background: var(--gold); opacity: .15; animation: twinkle 4s ease-in-out infinite;
+    clip-path: polygon(50% 0, 59% 41%, 100% 50%, 59% 59%, 50% 100%, 41% 59%, 0 50%, 41% 41%); }
+  @keyframes twinkle { 0%,100% { opacity: .12; } 50% { opacity: .85; } }
+  @media (prefers-reduced-motion: reduce) { .stars span { animation: none; opacity: .4; } }
+
+  .logo { font-family: var(--display); font-size: 30px; letter-spacing: 1px; text-decoration: none; color: var(--gold);
+    background: linear-gradient(180deg, #F3D67A 0%, #D4AF37 50%, #9C7A22 100%);
+    -webkit-background-clip: text; background-clip: text; -webkit-text-fill-color: transparent; }
+  header.site { border-bottom: 1px solid var(--line); }
+  .nav { display: flex; align-items: center; justify-content: space-between; padding-block: 22px; gap: 24px; }
+  .nav-cta { font-size: 13.5px; border: 1px solid var(--gold-dim); color: var(--text); padding: 9px 20px; text-decoration: none; }
+  .nav-cta:hover { border-color: var(--gold); color: var(--gold); }
+
+  .pago { padding-block: 64px 80px; }
+  .kicker { color: var(--gold-soft); font-size: 14.5px; margin: 0 0 12px; }
+  h1 { font-family: var(--display); font-weight: 400; font-size: clamp(30px, 4vw, 44px); margin: 0 0 18px; }
+  .sim { border: 1px solid var(--gold-dim); padding: 12px 16px; font-size: 13.5px; color: var(--text-dim); max-width: 78ch; margin: 0 0 32px; }
+  .sim strong { color: var(--gold); font-weight: 500; }
+
+  .cols { display: grid; grid-template-columns: 1.1fr .9fr; gap: 1px; background: var(--line); border: 1px solid var(--line); align-items: start; }
+  .caja { background: var(--coal); padding: 28px; }
+  .caja h2 { font-family: var(--display); font-weight: 400; font-size: 20px; color: var(--gold); margin: 0 0 18px; }
+  .caja p { margin: 0; font-size: 14px; color: var(--text-dim); }
+  .resumen { list-style: none; margin: 0 0 18px; padding: 0; }
+  .resumen li { display: flex; justify-content: space-between; gap: 16px; padding: 11px 0; border-bottom: 1px solid var(--line); font-size: 14.5px; }
+  .resumen .total { border-bottom: 0; font-family: var(--display); font-size: 21px; color: var(--gold); padding-top: 16px; }
+
+  .campo { margin-bottom: 16px; }
+  .campo label { display: block; font-size: 13.5px; color: var(--gold-soft); margin-bottom: 6px; }
+  .campo input, .campo select { width: 100%; background: var(--black); border: 1px solid var(--gold-dim); color: var(--text); font: inherit; font-size: 15px; padding: 11px 12px; }
+  .campo.invalido input, .campo.invalido select { border-color: #E0705A; }
+  .error { display: block; color: #F08A74; font-size: 12.5px; margin-top: 5px; }
+  .error:empty { display: none; }
+  .marca { display: block; color: var(--gold-soft); font-size: 12.5px; margin-top: 5px; min-height: 0; }
+  .marca:empty { display: none; }
+  .fila { display: grid; grid-template-columns: 1fr 1fr; gap: 14px; }
+
+  .btn { display: block; width: 100%; padding: 14px 26px; font: inherit; font-size: 15px; font-weight: 500; border: 1px solid var(--gold); background: var(--gold); color: var(--black); cursor: pointer; text-align: center; text-decoration: none; }
+  .btn:hover { background: #E6C24F; }
+  .btn:disabled { opacity: .55; cursor: wait; }
+  .btn-ghost { background: transparent; color: var(--text); border-color: var(--gold-dim); width: auto; display: inline-block; font-weight: 400; }
+  .btn-ghost:hover { background: transparent; border-color: var(--gold); }
+  .rechazo { border: 1px solid #E0705A; color: #F08A74 !important; padding: 10px 14px; margin-top: 14px !important; }
+  .prueba { margin-top: 18px !important; font-size: 12.5px !important; }
+  .prueba code { color: var(--gold); }
+
+  footer.site { border-top: 1px solid var(--line); padding-block: 28px; font-size: 12.5px; color: var(--text-dim); background: rgba(0,0,0,.7); }
+
+  @media (max-width: 860px) { .cols { grid-template-columns: 1fr; } .pago { padding-block: 44px; } }
+  @media (max-width: 520px) { :root { --indent: 1cm; } .fila { grid-template-columns: 1fr; } }
+</style>
+</head>
+<body>
+<div class="stars" id="stars" aria-hidden="true"></div>
+
+<header class="site">
+  <div class="wrap nav">
+    <a class="logo" href="index.html">Estarmy</a>
+    <a class="nav-cta" href="index.html#catalogo">Cancelar y volver</a>
+  </div>
+</header>
+
+<main class="wrap pago">
+  <section id="con-compra" hidden>
+    <p class="kicker">Último paso</p>
+    <h1>Pagá con tarjeta</h1>
+    <p class="sim"><strong>Simulación académica:</strong> no ingreses los datos de tu tarjeta real. Lo que escribas acá no se guarda ni se envía a ningún lado.</p>
+
+    <div class="cols">
+      <div class="caja">
+        <h2>Datos de la tarjeta</h2>
+        <form id="form-pago" novalidate>
+          <div class="campo">
+            <label for="numero">Número de tarjeta</label>
+            <input type="text" id="numero" inputmode="numeric" autocomplete="cc-number" placeholder="0000 0000 0000 0000">
+            <small class="marca" id="marca"></small>
+            <small class="error"></small>
+          </div>
+          <div class="campo">
+            <label for="titular">Nombre del titular</label>
+            <input type="text" id="titular" autocomplete="cc-name" placeholder="Como figura en la tarjeta">
+            <small class="error"></small>
+          </div>
+          <div class="fila">
+            <div class="campo">
+              <label for="venc">Vencimiento (MM/AA)</label>
+              <input type="text" id="venc" inputmode="numeric" autocomplete="cc-exp" placeholder="MM/AA">
+              <small class="error"></small>
+            </div>
+            <div class="campo">
+              <label for="cvv">Código de seguridad</label>
+              <input type="text" id="cvv" inputmode="numeric" autocomplete="cc-csc" placeholder="123">
+              <small class="error"></small>
+            </div>
+          </div>
+          <div class="campo">
+            <label for="cuotas">Cuotas</label>
+            <select id="cuotas"></select>
+          </div>
+          <button type="submit" class="btn" id="pagar">Pagar</button>
+          <p class="rechazo" id="rechazo" role="alert" hidden></p>
+        </form>
+        <p class="prueba">Para probar: <code>4242 4242 4242 4242</code> aprueba el pago, con cualquier vencimiento futuro y 3 dígitos de código. <code>4000 0000 0000 0002</code> simula un pago rechazado.</p>
+      </div>
+
+      <div class="caja">
+        <h2>Tu compra</h2>
+        <ul class="resumen" id="lista"></ul>
+        <p id="entrega-info"></p>
+      </div>
+    </div>
+  </section>
+
+  <section id="sin-compra" hidden>
+    <h1>No hay ninguna compra en curso</h1>
+    <p class="sim">Para pagar, primero elegí un producto y completá tus datos de entrega.</p>
+    <a class="btn btn-ghost" href="index.html#catalogo">Ir a la tienda</a>
+  </section>
+</main>
+
+<footer class="site">
+  <div class="wrap">© 2026 Estarmy — proyecto de simulación académica</div>
+</footer>
+
+<script>
+  const $ = id => document.getElementById(id);
+  const pesos = new Intl.NumberFormat('es-AR', { style: 'currency', currency: 'ARS', maximumFractionDigits: 0 });
+  const esc = t => String(t).replace(/[&<>"']/g, c => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' }[c]));
+
+  function leerPendiente() {
+    try { return JSON.parse(sessionStorage.getItem('estarmy_pendiente')); }
+    catch { return null; }
+  }
+  const pendiente = leerPendiente();
+
+  /* ---------- Validación ---------- */
+  const soloDigitos = v => v.replace(/\D/g, '');
+  const esAmex = () => /^3[47]/.test(soloDigitos($('numero').value));
+
+  function luhn(num) {
+    let suma = 0, doble = false;
+    for (let i = num.length - 1; i >= 0; i--) {
+      let d = Number(num[i]);
+      if (doble) { d *= 2; if (d > 9) d -= 9; }
+      suma += d;
+      doble = !doble;
+    }
+    return suma % 10 === 0;
+  }
+
+  const reglas = {
+    numero: v => { const d = soloDigitos(v); return /^\d{13,19}$/.test(d) && luhn(d) ? '' : 'Ingresá un número de tarjeta válido.'; },
+    titular: v => /^[A-Za-zÁÉÍÓÚÜÑáéíóúüñ'.\- ]{5,60}$/.test(v) && /\S+\s+\S+/.test(v) ? '' : 'Ingresá nombre y apellido como figuran en la tarjeta.',
+    venc: v => {
+      const m = /^(0[1-9]|1[0-2])\/(\d{2})$/.exec(v);
+      if (!m) return 'Ingresá el vencimiento con formato MM/AA.';
+      const finDeMes = new Date(2000 + Number(m[2]), Number(m[1]), 1);
+      return finDeMes > new Date() ? '' : 'La tarjeta está vencida.';
+    },
+    cvv: v => {
+      const largo = esAmex() ? 4 : 3;
+      return new RegExp('^\\d{' + largo + '}$').test(v) ? '' : 'Ingresá los ' + largo + ' dígitos del código de seguridad.';
+    }
+  };
+
+  function validarCampo(id) {
+    const el = $(id);
+    const mensaje = reglas[id](el.value.trim());
+    const caja = el.closest('.campo');
+    caja.classList.toggle('invalido', Boolean(mensaje));
+    caja.querySelector('.error').textContent = mensaje;
+    el.setAttribute('aria-invalid', mensaje ? 'true' : 'false');
+    return !mensaje;
+  }
+
+  const CAMPOS = ['numero', 'titular', 'venc', 'cvv'];
+
+  /* ---------- Formato mientras se escribe ---------- */
+  $('numero').addEventListener('input', e => {
+    const d = soloDigitos(e.target.value).slice(0, 19);
+    e.target.value = d.replace(/(.{4})/g, '$1 ').trim();
+    $('marca').textContent = /^4/.test(d) ? 'Visa' : /^(5[1-5]|2[2-7])/.test(d) ? 'Mastercard' : /^3[47]/.test(d) ? 'American Express' : '';
+  });
+  $('venc').addEventListener('input', e => {
+    let d = soloDigitos(e.target.value).slice(0, 4);
+    if (d.length > 2) d = d.slice(0, 2) + '/' + d.slice(2);
+    e.target.value = d;
+  });
+  $('cvv').addEventListener('input', e => { e.target.value = soloDigitos(e.target.value).slice(0, 4); });
+  CAMPOS.forEach(c => $(c).addEventListener('blur', () => validarCampo(c)));
+
+  /* ---------- Pago ---------- */
+  function finalizar(ultimos4, cuotas) {
+    const numero = 'EST-' + Date.now().toString(36).toUpperCase().slice(-6);
+    const pedido = {
+      numero,
+      fecha: new Date().toISOString(),
+      total: pendiente.total,
+      entrega: pendiente.entrega,
+      nombre: pendiente.nombre,
+      localidad: pendiente.localidad,
+      items: pendiente.items,
+      pago: { ultimos4, cuotas }   // nunca se guarda el número completo ni el código de seguridad
+    };
+    try {
+      const pedidos = JSON.parse(localStorage.getItem('estarmy_pedidos')) || [];
+      pedidos.push(pedido);
+      localStorage.setItem('estarmy_pedidos', JSON.stringify(pedidos));
+      if (pendiente.origen === 'carrito') localStorage.removeItem('estarmy_carrito');
+      sessionStorage.removeItem('estarmy_pendiente');
+    } catch { /* sin almacenamiento */ }
+    CAMPOS.forEach(c => { $(c).value = ''; });
+    window.location.href = 'pedido.html?n=' + encodeURIComponent(numero);
+  }
+
+  function procesarPago(e) {
+    e.preventDefault();
+    const resultados = CAMPOS.map(c => [c, validarCampo(c)]);
+    const primerError = resultados.find(([, ok]) => !ok);
+    if (primerError) { $(primerError[0]).focus(); return; }
+
+    const digitos = soloDigitos($('numero').value);
+    const cuotas = Number($('cuotas').value);
+    const boton = $('pagar');
+    boton.disabled = true;
+    boton.textContent = 'Procesando pago…';
+    $('rechazo').hidden = true;
+
+    setTimeout(() => {
+      if (digitos === '4000000000000002') {
+        $('rechazo').textContent = 'El banco rechazó el pago (simulación). Probá con otra tarjeta.';
+        $('rechazo').hidden = false;
+        boton.disabled = false;
+        boton.textContent = 'Pagar ' + pesos.format(pendiente.total);
+      } else {
+        finalizar(digitos.slice(-4), cuotas);
+      }
+    }, 1200);
+  }
+
+  /* ---------- Inicio ---------- */
+  if (!pendiente || !Array.isArray(pendiente.items) || !pendiente.items.length) {
+    $('sin-compra').hidden = false;
+  } else {
+    $('con-compra').hidden = false;
+    $('lista').innerHTML = pendiente.items
+      .map(i => `<li><span>${esc(i.cantidad)} × ${esc(i.nombre)}</span><span>${pesos.format(i.precio * i.cantidad)}</span></li>`)
+      .join('') + `<li class="total"><span>Total</span><span>${pesos.format(pendiente.total)}</span></li>`;
+    $('entrega-info').textContent = pendiente.entrega === 'retiro'
+      ? 'Retiro en Juan José Castelli.'
+      : 'Envío a ' + (pendiente.localidad || 'tu localidad') + '.';
+    $('cuotas').innerHTML = [1, 3, 6]
+      .map(n => `<option value="${n}">${n === 1 ? '1 pago de ' : n + ' cuotas de '}${pesos.format(Math.round(pendiente.total / n))}</option>`)
+      .join('');
+    $('pagar').textContent = 'Pagar ' + pesos.format(pendiente.total);
+    $('form-pago').addEventListener('submit', procesarPago);
+  }
+
+  const layer = $('stars');
+  for (let i = 0; i < 40; i++) {
+    const s = document.createElement('span');
+    const size = 6 + Math.random() * 14;
+    s.style.left = Math.random() * 100 + '%';
+    s.style.top = Math.random() * 100 + '%';
+    s.style.width = s.style.height = size + 'px';
+    s.style.animationDelay = (Math.random() * 6) + 's';
+    s.style.animationDuration = (3 + Math.random() * 4) + 's';
+    layer.appendChild(s);
+  }
+</script>
+</body>
+</html>
